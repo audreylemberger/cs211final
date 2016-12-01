@@ -57,6 +57,11 @@ public class Pizza
 	 */
 	public int compareTo(Pizza other)
 	{
+		/*
+		 * Should we allow for different kinds of sorting? I think that might
+		 * get too complicated. I think by age would be best but ughhh
+		 */
+		
 		return 0;
 		
 	}
@@ -226,8 +231,8 @@ public class Pizza
 	
 	/**
 	 * TODO: getAge method
+	 * I have no idea how to do this??? Should we start a timer in the constructor?
+	 * That might work for getting the age but it would make it harder to allow people
+	 * to input when the pizza was delivered if they remember
 	 */
-	
-	
-	
 }
