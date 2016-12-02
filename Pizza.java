@@ -295,9 +295,13 @@ public class Pizza
 	public String[] getDisplayArray()
 	{
 		String[] displayArray = new String[4];
+		//location of pizza
 		displayArray[0] = getLocString();
+		//toppings on pizza
 		displayArray[1] = printToppings();
+		//vendor of pizza
 		displayArray[2] = getVendor();
+		//dietary restrictions
 		displayArray[3] = printRestrictions();
 		return displayArray;
 	}

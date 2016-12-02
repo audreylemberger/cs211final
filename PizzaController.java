@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -36,15 +37,15 @@ public class PizzaController
 	public void refresh()
 	{
 		//delete all old pizzas
-		//TODO: figure out how to handle timing of pizzas
 		//go through each pizza in the set
 		for(Pizza pizzaElement:pizzas)
 		{
-			//TODO: placeholder, replace with method to check age of pizza
-			if(false)
+			//check if it's after the time the pizza expires
+			if(LocalDateTime.now().isAfter(pizzaElement.getExpiry()))
 			{
 				//remove from set when too old
 				pizzas.remove(pizzaElement);
+				viewSet.remove(pizzaElement);
 				numPizzas--;
 			}
 		}
