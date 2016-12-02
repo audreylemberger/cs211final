@@ -3,6 +3,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Class to handle each individual pizza
+ * @author kataiello
+ * @version 12/1/16
+ */
 public class Pizza 
 {
 	//array of booleans to keep track of dietary restrictions
@@ -51,16 +56,12 @@ public class Pizza
 	}
 	
 	/**
-	 * TODO how should we sort them?
+	 * TODO sort by age??
 	 * @param other
-	 * @return
+	 * @return 1 if this is greater, -1 if other is greater, 0 if equal
 	 */
 	public int compareTo(Pizza other)
 	{
-		/*
-		 * Should we allow for different kinds of sorting? I think that might
-		 * get too complicated. I think by age would be best but ughhh
-		 */
 		
 		return 0;
 		
@@ -227,6 +228,68 @@ public class Pizza
 		}
 		//remove the last comma from the stringbuilder and return
 		return build.substring(0, build.length() - 2);
+	}
+	
+	public String printRestrictions()
+	{
+		StringBuilder restSB = new StringBuilder();
+		if(restrictions[0])
+		{
+			restSB.append("vegetarian");
+		}
+		if(restrictions[1])
+		{
+			if(restSB.length() > 0)
+			{
+				restSB.append(", vegan");
+			}
+			else
+			{
+				restSB.append("vegan");
+			}
+		}
+		if(restrictions[2])
+		{
+			if(restSB.length() > 0)
+			{
+				restSB.append(", kosher/halal");
+			}
+			else
+			{
+				restSB.append("kosher/halal");
+			}
+		}
+		if(restrictions[3])
+		{
+			if(restSB.length() > 0)
+			{
+				restSB.append(", gluten free");
+			}
+			else
+			{
+				restSB.append("gluten free");
+			}
+		}
+		//if it doesn't meet any restrictions
+		if(restSB.length()<1)
+		{
+			restSB.append("none");
+		}
+		return restSB.toString();
+	}
+	
+	/**
+	 * Method to return strings for each cell in the display table to show
+	 * @return displayArray
+	 */
+	public String[] getDisplayArray()
+	{
+		String[] displayArray = new String[4];
+		displayArray[0] = getLocString();
+		displayArray[1] = printToppings();
+		displayArray[2] = getVendor();
+		displayArray[3] = printRestrictions();
+		return displayArray;
 	}
 	
 	/**

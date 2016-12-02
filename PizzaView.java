@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
@@ -7,6 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 
 public class PizzaView extends JPanel
@@ -18,12 +20,44 @@ public class PizzaView extends JPanel
 	private JComboBox<String> building;
 	private JComboBox<String> vendor;
 	private JComboBox<String> topping;
+	private JPanel pizzaPanel;
+	private PizzaController controller;
 	
-	public PizzaView()
+	public PizzaView(PizzaController controller)
 	{
 		super(new BorderLayout());
 		add(createSidePanel(), BorderLayout.EAST);
+		this.controller = controller;
+		add(createPizzaPanel(), BorderLayout.CENTER);
+		
 	}
+	
+	
+	private JPanel createPizzaPanel() 
+	{
+		//hardcoding the fuck out of this
+		pizzaPanel = new JPanel(new GridLayout(4,4));
+		pizzaPanel.add(new JLabel("Location"));
+		pizzaPanel.add(new JLabel("Toppings"));
+		pizzaPanel.add(new JLabel("Vendor"));
+		pizzaPanel.add(new JLabel("Dietary Restrictions"));
+		pizzaPanel.add(new JLabel("1837 Common Room"));
+		pizzaPanel.add(new JLabel("green peppers, olives"));
+		pizzaPanel.add(new JLabel("Domino's"));
+		pizzaPanel.add(new JLabel("vegetarian, kosher/halal"));
+		pizzaPanel.add(new JLabel("Clapp 222A"));
+		pizzaPanel.add(new JLabel("onions, sausage"));
+		pizzaPanel.add(new JLabel("Family Pizza"));
+		pizzaPanel.add(new JLabel("none"));
+		pizzaPanel.add(new JLabel("Kendade 305"));
+		pizzaPanel.add(new JLabel("extra cheese"));
+		pizzaPanel.add(new JLabel("Antonio's"));
+		pizzaPanel.add(new JLabel("vegetarian, kosher/halal, gluten free"));
+		
+		
+		return pizzaPanel;
+	}
+
 
 	private JPanel createSidePanel() 
 	{
@@ -56,11 +90,17 @@ public class PizzaView extends JPanel
 		
 		JPanel anotherPanel = new JPanel(new GridLayout(3,2));
 		
-		anotherPanel.add(new JLabel("Building"));
+		JLabel buildingLabel = new JLabel("Building");
+		buildingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		anotherPanel.add(buildingLabel);
 		anotherPanel.add(building);
-		anotherPanel.add(new JLabel("Vendor"));
+		JLabel vendorLabel = new JLabel("Vendor");
+		vendorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		anotherPanel.add(vendorLabel);
 		anotherPanel.add(vendor);
-		anotherPanel.add(new JLabel("Topping"));
+		JLabel toppingLabel = new JLabel("Topping");
+		toppingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		anotherPanel.add(toppingLabel);
 		anotherPanel.add(topping);
 		
 		sidePanel.add(anotherPanel);
