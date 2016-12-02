@@ -1,3 +1,7 @@
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -15,6 +19,8 @@ public class Pizza
 	//something to hold toppings
 	private HashSet<String> toppings;
 	//something to keep track of date and time/age?
+	private LocalDateTime delivered;
+	private LocalDateTime expires;
 	//number of remaining slices
 	private int slices;
 	//true if no slices remain
@@ -53,18 +59,19 @@ public class Pizza
 		location = loc;
 		vendor = vend;
 		this.note = note;
+		delivered = LocalDateTime.now();
+		expires = delivered.plusHours(3);
+		
 	}
 	
 	/**
-	 * TODO sort by age??
-	 * @param other
+	 * Method to compare ages of different pizzas
+	 * @param other pizza to be sorted
 	 * @return 1 if this is greater, -1 if other is greater, 0 if equal
 	 */
 	public int compareTo(Pizza other)
 	{
-		
-		return 0;
-		
+		return delivered.compareTo(other.getDelivered());
 	}
 	
 	/**
@@ -233,6 +240,9 @@ public class Pizza
 	public String printRestrictions()
 	{
 		StringBuilder restSB = new StringBuilder();
+		//go through each index in the array
+		//if the restriction matches, add the appropriate word
+		//to the return string
 		if(restrictions[0])
 		{
 			restSB.append("vegetarian");
@@ -293,9 +303,33 @@ public class Pizza
 	}
 	
 	/**
-	 * TODO: getAge method
-	 * I have no idea how to do this??? Should we start a timer in the constructor?
-	 * That might work for getting the age but it would make it harder to allow people
-	 * to input when the pizza was delivered if they remember
+	 * Method to calculate the age of the pizza
+	 * @return age in hours
 	 */
+	public double getAge()
+	{
+		//determine the number of minutes between when the pizza was delivered and now
+		long age = ChronoUnit.MINUTES.between(delivered, LocalDateTime.now());
+		//convert to hours
+		age = age/60;
+		return age;
+	}
+	
+	/**
+	 * Method to return the time the pizza was delivered
+	 * @return delivery time
+	 */
+	public LocalDateTime getDelivered()
+	{
+		return delivered;
+	}
+	
+	/**
+	 * Method to return the time the pizza will expire
+	 * @return expiration time
+	 */
+	public LocalDateTime getExpiry()
+	{
+		return expires;
+	}
 }
