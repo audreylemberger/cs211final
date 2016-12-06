@@ -148,6 +148,8 @@ public class PizzaView extends JPanel
 		anotherPanel.add(toppingLabel);
 		anotherPanel.add(topping);
 		
+		searchButton = new JButton("Search");
+		
 		sidePanel.add(anotherPanel);
 		sidePanel.add(searchButton);
 		
