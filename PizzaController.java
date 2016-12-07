@@ -118,16 +118,20 @@ public class PizzaController
 	 */
 	public void searchTopping(String topping)
 	{
-		//for each pizza in viewSet
-		for(Pizza pizzaElement:viewSet)
+		if(topping.length() > 1)
 		{
-			//if it doesn't have this topping
-			if(!(pizzaElement.hasTopping(topping)))
+			//for each pizza in viewSet
+			for(Pizza pizzaElement:viewSet)
 			{
-				//delete it from viewSet
-				viewSet.remove(pizzaElement);
+				//if it doesn't have this topping
+				if(!(pizzaElement.hasTopping(topping)))
+				{
+					//delete it from viewSet
+					viewSet.remove(pizzaElement);
+				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -136,16 +140,21 @@ public class PizzaController
 	 */
 	public void searchLoc(String building)
 	{
-		//for each pizza in viewSet
-		for(Pizza pizzaElement:viewSet)
+		//if we haven't been passed an empty string
+		if(building.length() > 1)
 		{
-			//if it isn't in the specified building
-			if(!(pizzaElement.getLoc()[0]).equals(building))
+			//for each pizza in viewSet
+			for(Pizza pizzaElement:viewSet)
 			{
-				//delete it from viewSet
-				viewSet.remove(pizzaElement);
+				//if it isn't in the specified building
+				if(!(pizzaElement.getLoc()[0]).equals(building))
+				{
+					//delete it from viewSet
+					viewSet.remove(pizzaElement);
+				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -175,16 +184,30 @@ public class PizzaController
 	 */
 	public void searchVendor(String vendor)
 	{
-		//for each pizza in viewSet
-		for(Pizza pizzaElement:viewSet)
+		if(vendor.length() > 1)
 		{
-			//if it isn't the specified vendor
-			if(!(pizzaElement.getVendor().equals(vendor)))
+			//for each pizza in viewSet
+			for(Pizza pizzaElement:viewSet)
 			{
-				//delete it from viewSet
-				viewSet.remove(pizzaElement);
+				//if it isn't the specified vendor
+				if(!(pizzaElement.getVendor().equals(vendor)))
+				{
+					//delete it from viewSet
+					viewSet.remove(pizzaElement);
+				}
 			}
 		}
+		
+	}
+	
+	public void resetSearch()
+	{
+		viewSet = pizzas;
+	}
+	
+	public TreeSet<Pizza> getViewSet()
+	{
+		return viewSet;
 	}
 	
 	

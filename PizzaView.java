@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -60,17 +62,17 @@ public class PizzaView extends JPanel
 		
 		pizzaPanel = new JPanel(new GridLayout(2, 4));
 		JPanel topPanel = new JPanel(new GridLayout(1,4));
-		JTextArea locLabel = new JTextArea("Location");
-		locLabel.setLineWrap(true);
+		JLabel locLabel = new JLabel("Location");
+		//locLabel.setLineWrap(true);
 		topPanel.add(locLabel);
-		JTextArea topLabel = new JTextArea("Toppings");
-		topLabel.setLineWrap(true);
+		JLabel topLabel = new JLabel("Toppings");
+		//topLabel.setLineWrap(true);
 		topPanel.add(topLabel);
-		JTextArea vendLabel = new JTextArea("Vendor");
-		vendLabel.setLineWrap(true);
+		JLabel vendLabel = new JLabel("Vendor");
+		//vendLabel.setLineWrap(true);
 		topPanel.add(vendLabel);
-		JTextArea drLabel = new JTextArea("Dietary Restrictions");
-		drLabel.setLineWrap(true);
+		JLabel drLabel = new JLabel("Dietary Restrictions");
+		//drLabel.setLineWrap(true);
 		topPanel.add(drLabel);
 		pizzaPanel.add(topPanel);
 		
@@ -82,13 +84,10 @@ public class PizzaView extends JPanel
 
 	private void updatePizzas() 
 	{
-		/*
-		 * TODO: all the logic to search
-		 */
 		
 		pizzaList = new JPanel(new GridLayout(controller.getNumViewPizzas(), 4));
 		//for every pizza in the set that matches the current search
-		for(Pizza pizzaElement:controller.search())
+		for(Pizza pizzaElement:controller.getViewSet())
 		{
 			String[] display = pizzaElement.getDisplayArray();
 			//for each index in the display array
@@ -149,6 +148,18 @@ public class PizzaView extends JPanel
 		anotherPanel.add(topping);
 		
 		searchButton = new JButton("Search");
+		searchButton.addActionListener(
+				new ActionListener()
+				{
+					/**
+					 * Invoked when associated action is performed.
+					 **/
+					public void actionPerformed( ActionEvent e )
+					{
+						search();
+					}
+				}
+			);
 		
 		sidePanel.add(anotherPanel);
 		sidePanel.add(searchButton);
@@ -156,6 +167,42 @@ public class PizzaView extends JPanel
 		
 		return sidePanel;
 		
+	}
+	
+	public void search()
+	{
+		//reset the controller to search on a new set
+		controller.resetSearch();
+		
+		//search for all of the dietary restrictions
+		if(vegetarian.isSelected())
+		{
+			controller.searchRestrict(0);
+		}
+		if(vegan.isSelected())
+		{
+			controller.searchRestrict(1);
+		}
+		if(kosher.isSelected())
+		{
+			controller.searchRestrict(2);
+		}
+		if(glutenFree.isSelected())
+		{
+			controller.searchRestrict(3);
+		}
+		
+		//search by building
+		controller.searchLoc((String) building.getSelectedItem()); 
+		
+		//search by vendor
+		controller.searchVendor((String) vendor.getSelectedItem());
+		
+		//search by topping
+		controller.searchTopping((String) topping.getSelectedItem());
+		
+		//update the display
+		updatePizzas();
 	}
 	
 	
