@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
@@ -25,8 +26,11 @@ public class PizzaView extends JPanel
 	private JComboBox<String> vendor;
 	private JComboBox<String> topping;
 	private JButton searchButton;
+	private JButton addButton;
+	private JPanel sidePanel;
 	private JPanel pizzaPanel;
 	private JPanel pizzaList;
+	private JPanel addPanel;
 	private PizzaController controller;
 	
 	public PizzaView(PizzaController controller)
@@ -105,7 +109,7 @@ public class PizzaView extends JPanel
 
 	private JPanel createSidePanel() 
 	{
-		JPanel sidePanel = new JPanel();
+		sidePanel = new JPanel();
 		sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
 		JLabel search = new JLabel("Search by...");
 		
@@ -161,6 +165,20 @@ public class PizzaView extends JPanel
 				}
 			);
 		
+		addButton = new JButton("Add a Pizza");
+		addButton.addActionListener(
+				new ActionListener()
+				{
+					/**
+					 * Invoked when associated action is performed.
+					 **/
+					public void actionPerformed( ActionEvent e )
+					{
+						switchAddPanel();
+					}
+				}
+			);
+		
 		sidePanel.add(anotherPanel);
 		sidePanel.add(searchButton);
 		
@@ -203,6 +221,45 @@ public class PizzaView extends JPanel
 		
 		//update the display
 		updatePizzas();
+	}
+	
+	
+	public void switchAddPanel()
+	{
+		remove(sidePanel);
+		remove(pizzaPanel);
+		addPanel = new JPanel(new BorderLayout());
+		
+		JLabel topLabel = new JLabel("Add a pizza");
+		addPanel.add(topLabel, BorderLayout.NORTH);
+		
+		JPanel pizzaLoc = new JPanel(new GridLayout(2, 1));
+		JLabel whereLabel = new JLabel("Where's your pizza?");
+		JPanel nestedLoc = new JPanel(new GridLayout(1, 4));
+		nestedLoc.add(new JLabel("Building"));
+		nestedLoc.add(building);
+		nestedLoc.add(new JLabel("Room"));
+		JTextField roomField = new JTextField();
+		nestedLoc.add(roomField);
+		pizzaLoc.add(nestedLoc);
+		
+		
+		JLabel dietary = new JLabel("Dietary Restriction");
+		vegetarian = new JCheckBox("vegetarian");
+		vegan = new JCheckBox("vegan");
+		kosher = new JCheckBox("kosher");
+		glutenFree = new JCheckBox("glutenFree");
+		
+		
+		add(addPanel, BorderLayout.CENTER);
+	}
+	
+	public void switchPizzaPanel()
+	{
+		remove(addPanel);
+		
+		add(createSidePanel(), BorderLayout.EAST);
+		add(createPizzaPanel(), BorderLayout.CENTER);
 	}
 	
 	
