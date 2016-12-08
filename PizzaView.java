@@ -32,6 +32,7 @@ public class PizzaView extends JPanel
 	private JPanel pizzaPanel;
 	private JPanel pizzaList;
 	private JPanel addPanel;
+	private JPanel killMe;
 	private PizzaController controller;
 	
 	public PizzaView(PizzaController controller)
@@ -40,6 +41,7 @@ public class PizzaView extends JPanel
 		this.add(createSidePanel(), BorderLayout.EAST);
 		this.controller = controller;
 		this.add(createPizzaPanel(), BorderLayout.CENTER);
+		addABunchOfPizzas();
 		
 	}
 	
@@ -67,23 +69,28 @@ public class PizzaView extends JPanel
 		
 		//TODO add a JButton to each pizza to view it
 		
-		pizzaPanel = new JPanel(new GridLayout(2, 4));
-		JPanel topPanel = new JPanel(new GridLayout(1,4));
-		JLabel locLabel = new JLabel("Location");
+		pizzaPanel = new JPanel(new BorderLayout());
+		JPanel topPanel = new JPanel(new GridLayout(1,5));
+		JLabel locLabel = new JLabel("Location", SwingConstants.CENTER);
 		//locLabel.setLineWrap(true);
 		topPanel.add(locLabel);
-		JLabel topLabel = new JLabel("Toppings");
+		JLabel topLabel = new JLabel("Toppings", SwingConstants.CENTER);
 		//topLabel.setLineWrap(true);
 		topPanel.add(topLabel);
-		JLabel vendLabel = new JLabel("Vendor");
+		JLabel vendLabel = new JLabel("Vendor", SwingConstants.CENTER);
 		//vendLabel.setLineWrap(true);
 		topPanel.add(vendLabel);
-		JLabel drLabel = new JLabel("Dietary Restrictions");
+		JLabel drLabel = new JLabel("Dietary Restrictions", SwingConstants.CENTER);
 		//drLabel.setLineWrap(true);
 		topPanel.add(drLabel);
-		pizzaPanel.add(topPanel);
+		JLabel spacing = new JLabel("");
+		topPanel.add(spacing);
+		pizzaPanel.add(topPanel, BorderLayout.NORTH);
 		
 		updatePizzas();
+		search();
+		pizzaPanel.revalidate();
+		pizzaPanel.repaint();
 		
 		return pizzaPanel;
 	}
@@ -91,8 +98,16 @@ public class PizzaView extends JPanel
 
 	private void updatePizzas() 
 	{
+		controller.refresh();
+		if(pizzaList != null)
+		{
+			pizzaPanel.remove(pizzaList);
+			pizzaList.removeAll();
+		}
 		
-		pizzaList = new JPanel(new GridLayout(controller.getNumViewPizzas(), 4));
+		pizzaList = new JPanel(new GridLayout(controller.getNumViewPizzas(), 5));
+		System.out.println(controller.getNumViewPizzas());
+		System.out.println(controller.getViewSet().size());
 		//for every pizza in the set that matches the current search
 		for(Pizza pizzaElement:controller.getViewSet())
 		{
@@ -101,11 +116,30 @@ public class PizzaView extends JPanel
 			for(int i = 0; i < display.length; i++)
 			{
 				//create a jtextarea and add it
-				JTextArea dispText = new JTextArea(display[i]);
-				dispText.setLineWrap(true);
+				JLabel dispText = new JLabel(display[i], SwingConstants.CENTER);
+				//dispText.setLineWrap(true);
 				pizzaList.add(dispText);
 			}
+			JButton pizzaButton = new JButton("View");
+			pizzaButton.addActionListener(
+					new ActionListener()
+					{
+						/**
+						 * Invoked when associated action is performed.
+						 **/
+						public void actionPerformed( ActionEvent e )
+						{
+							switchViewPizza(pizzaElement);
+						}
+					}
+				);
+			pizzaList.add(pizzaButton);
+			
 		}
+		
+		pizzaPanel.add(pizzaList, BorderLayout.CENTER);
+		pizzaList.revalidate();
+		pizzaList.repaint();
 		
 	}
 
@@ -185,6 +219,8 @@ public class PizzaView extends JPanel
 		sidePanel.add(anotherPanel);
 		sidePanel.add(searchButton);
 		sidePanel.add(addButton);
+		sidePanel.revalidate();
+		sidePanel.repaint();
 		
 		
 		return sidePanel;
@@ -245,6 +281,7 @@ public class PizzaView extends JPanel
 		nestedLoc.add(new JLabel("Room"));
 		JTextField roomField = new JTextField();
 		nestedLoc.add(roomField);
+		pizzaLoc.add(whereLabel);
 		pizzaLoc.add(nestedLoc);
 		
 		JPanel dietaryPanel = new JPanel();
@@ -253,22 +290,13 @@ public class PizzaView extends JPanel
 		JCheckBox vegan = new JCheckBox("vegan");
 		JCheckBox kosher = new JCheckBox("kosher");
 		JCheckBox glutenFree = new JCheckBox("glutenFree");
+		dietaryPanel.add(dietary);
+		dietaryPanel.add(vegetarian);
+		dietaryPanel.add(kosher);
+		dietaryPanel.add(glutenFree);
 		
-		JPanel toppingPanel = new JPanel(new GridLayout(2, 1));
-		JLabel toppingsLabel = new JLabel("Toppings");
-		toppingPanel.add(toppingsLabel);
 		
 		
-		JPanel topCheckPanel = new JPanel(new GridLayout(4, 3));
-		JCheckBox[] toppingsArray = {new JCheckBox("cheese"), new JCheckBox("extra cheese"), new JCheckBox("sauce"),
-								new JCheckBox("pepperoni"), new JCheckBox("mushrooms"), new JCheckBox("onions"),
-								new JCheckBox("sausage"), new JCheckBox("bacon"), new JCheckBox("black olives"),
-								new JCheckBox("green peppers"), new JCheckBox("pineapple"), new JCheckBox("spinach")};
-		//will this work who knows
-		for(int i = 0; i < toppingsArray.length; i++)
-		{
-			topCheckPanel.add(toppingsArray[i]);
-		}
 		
 		JPanel vendorPanel = new JPanel(new GridLayout(1,2));
 		vendorPanel.add(new JLabel("Where is your pizza from?"));
@@ -284,24 +312,49 @@ public class PizzaView extends JPanel
 		whoEvenDoes.add(dietaryPanel);
 		whoEvenDoes.add(vendorPanel);
 		
+		
+		
+		
+		JCheckBox cheese = new JCheckBox("cheese");
+		JCheckBox extraCheese = new JCheckBox("extra cheese");
+		JCheckBox sauce = new JCheckBox("sauce");
+		JCheckBox pepperoni = new JCheckBox("pepperoni");
+		JCheckBox mushrooms = new JCheckBox("mushrooms");
+		JCheckBox onions = new JCheckBox("onions");
+		JCheckBox sausage = new JCheckBox("sausage");
+		JCheckBox bacon = new JCheckBox("bacon");
+		JCheckBox blackOlives = new JCheckBox("black olives");
+		JCheckBox greenPeppers = new JCheckBox("green peppers");
+		JCheckBox pineapple = new JCheckBox("pineapple");
+		JCheckBox spinach = new JCheckBox("spinach");
+		
+//		JCheckBox[] toppingsArray = {new JCheckBox("cheese"), new JCheckBox("extra cheese"), new JCheckBox("sauce"),
+//				new JCheckBox("pepperoni"), new JCheckBox("mushrooms"), new JCheckBox("onions"),
+//				new JCheckBox("sausage"), new JCheckBox("bacon"), new JCheckBox("black olives"),
+//				new JCheckBox("green peppers"), new JCheckBox("pineapple"), new JCheckBox("spinach")};
+		//will this work who knows
+		
+		JPanel toppingPanel = new JPanel(new GridLayout(2, 1));
+		JLabel toppingsLabel = new JLabel("Toppings");
+		toppingPanel.add(toppingsLabel);
+		
+		
+		JPanel topCheckPanel = new JPanel(new GridLayout(4, 3));
+		
+		JCheckBox[] toppingsArray = {cheese, extraCheese, sauce, pepperoni, mushrooms, onions,
+									sausage, bacon, blackOlives, greenPeppers, pineapple, spinach};
+
+		for(int i = 0; i < toppingsArray.length; i++)
+		{
+			topCheckPanel.add(toppingsArray[i]);
+		}
+		toppingPanel.add(topCheckPanel);
+		
 		iDontEvenKnow.add(pizzaLoc);
 		iDontEvenKnow.add(toppingPanel);
 		iDontEvenKnow.add(whoEvenDoes);
 		iDontEvenKnow.add(notePanel);
 		
-		
-//		JCheckBox cheese = new JCheckBox("cheese");
-//		JCheckBox extraCheese = new JCheckBox("extra cheese");
-//		JCheckBox sauce = new JCheckBox("sauce");
-//		JCheckBox pepperoni = new JCheckBox("pepperoni");
-//		JCheckBox mushrooms = new JCheckBox("mushrooms");
-//		JCheckBox onions = new JCheckBox("onions");
-//		JCheckBox sausage = new JCheckBox("sausage");
-//		JCheckBox bacon = new JCheckBox("bacon");
-//		JCheckBox blackOlives = new JCheckBox("black olives");
-//		JCheckBox greenPeppers = new JCheckBox("green peppers");
-//		JCheckBox pineapple = new JCheckBox("pineapple");
-//		JCheckBox spinach = new JCheckBox("spinach");
 		
 		JButton createPizzaButton = new JButton("Create Pizza");
 		createPizzaButton.addActionListener(
@@ -357,15 +410,22 @@ public class PizzaView extends JPanel
 								toppingList.add(toppingsArray[i].getText());
 							}
 						}
-						String[] topParameter = (String[]) toppingList.toArray();
+						//***forgive me Peter for I have sinned***
+						Object[] topParameter = toppingList.toArray();
+						String[] stringTopParameter = new String[topParameter.length];
+						for(int i = 0; i < stringTopParameter.length; i++)
+						{
+							//i am very sorry
+							stringTopParameter[i] = (String) topParameter[i];
+						}
 						
 						String[] loc = {(String) building.getSelectedItem(), roomField.getText()};
 						
 						String vend = (String) vendor.getSelectedItem();
 						String note = noteField.getText();
 						
-						controller.addPizza(new Pizza(restrictions, topParameter, loc, vend, note));
-						
+						controller.addPizza(new Pizza(restrictions, stringTopParameter, loc, vend, note));
+						updatePizzas();
 						switchPizzaPanel();
 					}
 				}
@@ -373,15 +433,113 @@ public class PizzaView extends JPanel
 		
 		addPanel.add(iDontEvenKnow, BorderLayout.CENTER);
 		addPanel.add(createPizzaButton, BorderLayout.SOUTH);
+		addPanel.revalidate();
+		addPanel.repaint();
 		this.add(addPanel, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
 	}
 	
 	public void switchPizzaPanel()
 	{
-		this.remove(addPanel);
-		
+		if(addPanel != null)
+		{
+			this.remove(addPanel);
+		}
+		if(killMe != null)
+		{
+			this.remove(killMe);
+		}
 		this.add(createSidePanel(), BorderLayout.EAST);
 		this.add(createPizzaPanel(), BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void switchViewPizza(Pizza viewing)
+	{
+		this.remove(sidePanel);
+		this.remove(pizzaPanel);
+		
+		killMe = new JPanel();
+		killMe.setLayout(new BoxLayout(killMe, BoxLayout.Y_AXIS));
+		JLabel heading = new JLabel("Pizza in " + viewing.getLocString());
+		JLabel age = new JLabel("Delivered " + viewing.getAge() + " hours ago");
+		JLabel toppings = new JLabel("Toppings: " + viewing.printToppings());
+		JLabel restrictions = new JLabel("Dietary restrictions: " + viewing.printRestrictions());
+		JLabel vendor = new JLabel("Ordered from " + viewing.getVendor());
+		JLabel note = new JLabel("Note: " + viewing.getNote());
+		killMe.add(heading);
+		killMe.add(age);
+		killMe.add(toppings);
+		killMe.add(restrictions);
+		killMe.add(vendor);
+		killMe.add(note);
+		
+		JButton finishedButton = new JButton("This pizza is finished");
+		finishedButton.addActionListener(
+				new ActionListener()
+				{
+					/**
+					 * Invoked when associated action is performed.
+					 **/
+					public void actionPerformed( ActionEvent e )
+					{
+						viewing.markFinished();
+						controller.refresh();
+						switchPizzaPanel();
+					}
+				}
+			);
+		
+		JButton backButton = new JButton("Back");
+		backButton.addActionListener(
+				new ActionListener()
+				{
+					/**
+					 * Invoked when associated action is performed.
+					 **/
+					public void actionPerformed( ActionEvent e )
+					{
+						switchPizzaPanel();
+					}
+				}
+			);
+		
+		killMe.add(backButton);
+		killMe.add(finishedButton);
+		this.add(killMe);
+		this.revalidate();
+		this.repaint();
+		
+	}
+	
+	public void addABunchOfPizzas()
+	{
+		boolean[] restrictions = {true, false, true, false};
+		String[] toppings = {"cheese", "sauce", "black olives"};
+		String[] loc = {"Clapp", "202"};
+		
+		boolean[] restrictions2 = {false, false, true, false};
+		String[] toppings2 = {"cheese", "sauce", "pineapple", "pepperoni"};
+		String[] loc2 = {"Kendade", "307"};
+		String[] loc3 = {"Cleveland", "201"};
+		controller.addPizza(new Pizza(restrictions, toppings, loc, "Dominos", "For hungry CS Students"));
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		controller.addPizza(new Pizza(restrictions2, toppings2, loc2, "Antonio's", ""));
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		controller.addPizza(new Pizza(restrictions, toppings, loc3, "Family Pizza", "with cookies"));
+		search();
 	}
 	
 	

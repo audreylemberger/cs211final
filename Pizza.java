@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @author kataiello
  * @version 12/1/16
  */
-public class Pizza 
+public class Pizza implements Comparable
 {
 	//array of booleans to keep track of dietary restrictions
 	private boolean[] restrictions;
@@ -63,15 +63,15 @@ public class Pizza
 		
 	}
 	
-	/**
-	 * Method to compare ages of different pizzas
-	 * @param other pizza to be sorted
-	 * @return 1 if this is greater, -1 if other is greater, 0 if equal
-	 */
-	public int compareTo(Pizza other)
-	{
-		return delivered.compareTo(other.getDelivered());
-	}
+//	/**
+//	 * Method to compare ages of different pizzas
+//	 * @param other pizza to be sorted
+//	 * @return 1 if this is greater, -1 if other is greater, 0 if equal
+//	 */
+//	public int compareTo(Pizza other)
+//	{
+//		return delivered.compareTo(other.getDelivered());
+//	}
 	
 //	/**
 //	 * Getter method for slices
@@ -334,5 +334,10 @@ public class Pizza
 	public LocalDateTime getExpiry()
 	{
 		return expires;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return delivered.compareTo(((Pizza) o).getDelivered());
 	}
 }

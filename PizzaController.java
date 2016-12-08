@@ -36,6 +36,9 @@ public class PizzaController
 	 */
 	public void refresh()
 	{
+		//lord save me & my macbook
+		TreeSet<Pizza> iShouldntBeAllowedAComputer = new TreeSet<Pizza>();
+		
 		//delete all old pizzas
 		//go through each pizza in the set
 		for(Pizza pizzaElement:pizzas)
@@ -43,12 +46,23 @@ public class PizzaController
 			//check if it's after the time the pizza expires
 			if(LocalDateTime.now().isAfter(pizzaElement.getExpiry()))
 			{
-				//remove from set when too old
-				pizzas.remove(pizzaElement);
-				viewSet.remove(pizzaElement);
-				numPizzas--;
+				iShouldntBeAllowedAComputer.add(pizzaElement);
 			}
+			if(pizzaElement.isFinished())
+			{
+				iShouldntBeAllowedAComputer.add(pizzaElement);
+			}
+			
 		}
+		
+		for(Pizza pizzaElement:iShouldntBeAllowedAComputer)
+		{
+			//remove from set when too old or finished
+			pizzas.remove(pizzaElement);
+			viewSet.remove(pizzaElement);
+		}
+		
+		numPizzas = pizzas.size();
 	}
 	
 	/**
@@ -121,6 +135,7 @@ public class PizzaController
 	{
 		if(topping.length() > 1)
 		{
+			TreeSet<Pizza> iWantToBeDone = new TreeSet<Pizza>();
 			//for each pizza in viewSet
 			for(Pizza pizzaElement:viewSet)
 			{
@@ -128,9 +143,16 @@ public class PizzaController
 				if(!(pizzaElement.hasTopping(topping)))
 				{
 					//delete it from viewSet
-					viewSet.remove(pizzaElement);
+					//viewSet.remove(pizzaElement);
+					//we have to work around this because we procrastinated too much to solve this logically
+					iWantToBeDone.add(pizzaElement);
 				}
 			}
+			for(Pizza pizzaElement:iWantToBeDone)
+			{
+				viewSet.remove(pizzaElement);
+			}
+			
 		}
 		
 	}
@@ -141,6 +163,8 @@ public class PizzaController
 	 */
 	public void searchLoc(String building)
 	{
+		TreeSet<Pizza> iWantToBeDone = new TreeSet<Pizza>();
+		
 		//if we haven't been passed an empty string
 		if(building.length() > 1)
 		{
@@ -151,8 +175,15 @@ public class PizzaController
 				if(!(pizzaElement.getLoc()[0]).equals(building))
 				{
 					//delete it from viewSet
-					viewSet.remove(pizzaElement);
+					//viewSet.remove(pizzaElement);
+					
+					//we have to work around this because we procrastinated too much to solve this logically
+					iWantToBeDone.add(pizzaElement);
 				}
+			}
+			for(Pizza pizzaElement:iWantToBeDone)
+			{
+				viewSet.remove(pizzaElement);
 			}
 		}
 		
@@ -166,6 +197,7 @@ public class PizzaController
 	 */
 	public void searchRestrict(int index)
 	{
+		TreeSet<Pizza> iWantToBeDone = new TreeSet<Pizza>();
 		//for each pizza in viewSet
 		for(Pizza pizzaElement:viewSet)
 		{
@@ -173,8 +205,15 @@ public class PizzaController
 			if(!(pizzaElement.meetsRestriction(index)))
 			{
 				//delete it from viewSet
-				viewSet.remove(pizzaElement);
+				//viewSet.remove(pizzaElement);
+				
+				//we have to work around this because we procrastinated too much to solve this logically
+				iWantToBeDone.add(pizzaElement);
 			}
+		}
+		for(Pizza pizzaElement:iWantToBeDone)
+		{
+			viewSet.remove(pizzaElement);
 		}
 	}
 	
@@ -187,6 +226,7 @@ public class PizzaController
 	{
 		if(vendor.length() > 1)
 		{
+			TreeSet<Pizza> iWantToBeDone = new TreeSet<Pizza>();
 			//for each pizza in viewSet
 			for(Pizza pizzaElement:viewSet)
 			{
@@ -194,8 +234,15 @@ public class PizzaController
 				if(!(pizzaElement.getVendor().equals(vendor)))
 				{
 					//delete it from viewSet
-					viewSet.remove(pizzaElement);
+					//viewSet.remove(pizzaElement);
+					
+					//we have to work around this because we procrastinated too much to solve this logically
+					iWantToBeDone.add(pizzaElement);
 				}
+			}
+			for(Pizza pizzaElement:iWantToBeDone)
+			{
+				viewSet.remove(pizzaElement);
 			}
 		}
 		
@@ -203,7 +250,7 @@ public class PizzaController
 	
 	public void resetSearch()
 	{
-		viewSet = pizzas;
+		viewSet = new TreeSet<Pizza>(pizzas);
 	}
 	
 	public TreeSet<Pizza> getViewSet()
