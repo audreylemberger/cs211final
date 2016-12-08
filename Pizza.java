@@ -337,7 +337,19 @@ public class Pizza implements Comparable
 	}
 
 	@Override
-	public int compareTo(Object o) {
-		return delivered.compareTo(((Pizza) o).getDelivered());
+	public int compareTo(Object o) 
+	{
+		if(delivered.compareTo(((Pizza) o).getDelivered()) != 0)
+		{
+			return delivered.compareTo(((Pizza) o).getDelivered());
+		}
+		else if(location[0].compareTo(((Pizza) o).getLoc()[0]) != 0)
+		{
+			return location[0].compareTo(((Pizza) o).getLoc()[0]);
+		}
+		else
+		{
+			return location[1].compareTo(((Pizza) o).getLoc()[1]);
+		}
 	}
 }

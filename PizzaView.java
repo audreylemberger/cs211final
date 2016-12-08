@@ -154,15 +154,25 @@ public class PizzaView extends JPanel
 		vegetarian = new JCheckBox("vegetarian");
 		vegan = new JCheckBox("vegan");
 		kosher = new JCheckBox("kosher");
-		glutenFree = new JCheckBox("glutenFree");
+		glutenFree = new JCheckBox("gluten free");
 		
-		String[] buildings = {"", "Clapp", "Kendade", "Cleveland", "Carr"};
+		String[] buildings = {"", "Art Building", "Carr", "Ciruti", "Clapp", 
+								"Cleveland", "Dwight", "Kendade", "Kendall",
+								"Pratt", "Reese", "Rooke", "Shattuck", "Skinner",
+								"Library", "1837", "Abbey", "Brigham", "Buckland",
+								"Creighton", "Dickinson", "Ham", "MacGregor",
+								"North Mandelle", "South Mandelle", "Mead",
+								"Pearsons Annex", "Pearsons", "Porter", "Prospect",
+								"North Rockies", "South Rockies", "Safford", 
+								"Torrey", "Wilder"};
 		building = new JComboBox<String>(buildings);
 		
 		String[] vendors = {"", "Dominos", "Pizza Hut", "Family Pizza", "Antonio's"};
 		vendor = new JComboBox<String>(vendors);
 		
-		String[] toppings = {"", "pepperoni", "green peppers", "olives", "sausage"};
+		String[] toppings = {"", "cheese", "extra cheese", "sauce", "pepperoni", "mushrooms",
+							"onions", "sausage", "bacon", "black olives", "green peppers", 
+							"pineapple", "spinach"};
 		topping = new JComboBox<String>(toppings);
 		
 		
@@ -311,8 +321,6 @@ public class PizzaView extends JPanel
 		JPanel whoEvenDoes = new JPanel(new GridLayout(2,1));
 		whoEvenDoes.add(dietaryPanel);
 		whoEvenDoes.add(vendorPanel);
-		
-		
 		
 		
 		JCheckBox cheese = new JCheckBox("cheese");
@@ -517,27 +525,15 @@ public class PizzaView extends JPanel
 	public void addABunchOfPizzas()
 	{
 		boolean[] restrictions = {true, false, true, false};
-		String[] toppings = {"cheese", "sauce", "black olives"};
+		String[] toppings = {"cheese", "sauce"};
 		String[] loc = {"Clapp", "202"};
 		
 		boolean[] restrictions2 = {false, false, true, false};
-		String[] toppings2 = {"cheese", "sauce", "pineapple", "pepperoni"};
+		String[] toppings2 = {"cheese", "sauce", "pepperoni"};
 		String[] loc2 = {"Kendade", "307"};
 		String[] loc3 = {"Cleveland", "201"};
 		controller.addPizza(new Pizza(restrictions, toppings, loc, "Dominos", "For hungry CS Students"));
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		controller.addPizza(new Pizza(restrictions2, toppings2, loc2, "Antonio's", ""));
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		controller.addPizza(new Pizza(restrictions, toppings, loc3, "Family Pizza", "with cookies"));
 		search();
 	}
