@@ -22,7 +22,7 @@ public class Pizza
 	private LocalDateTime delivered;
 	private LocalDateTime expires;
 	//number of remaining slices
-	private int slices;
+	//private int slices;
 	//true if no slices remain
 	private boolean done;
 	//first index is building, second is room
@@ -44,7 +44,7 @@ public class Pizza
 	 * @param vend
 	 * @param note
 	 */
-	public Pizza(boolean[] restr, String[] tops, int slices, String[] loc, String vend, String note)
+	public Pizza(boolean[] restr, String[] tops, String[] loc, String vend, String note)
 	{
 		//indices are vegetarian, vegan, kosher/halal, gluten free
 		restrictions = restr;
@@ -55,7 +55,6 @@ public class Pizza
 			toppings.add(tops[i]);
 		}
 		//initialize all these variables
-		this.slices = slices;
 		location = loc;
 		vendor = vend;
 		this.note = note;
@@ -74,44 +73,44 @@ public class Pizza
 		return delivered.compareTo(other.getDelivered());
 	}
 	
-	/**
-	 * Getter method for slices
-	 * DONE
-	 * @return number of slices
-	 */
-	public int getSlices()
-	{
-		return slices;
-	}
+//	/**
+//	 * Getter method for slices
+//	 * DONE
+//	 * @return number of slices
+//	 */
+//	public int getSlices()
+//	{
+//		return slices;
+//	}
 	
-	/**
-	 * Decrements slices by one
-	 * DONE
-	 */
-	public void decrementSlices()
-	{
-		slices--;
-		if(slices < 1)
-		{
-			markFinished();
-		}
-	}
+//	/**
+//	 * Decrements slices by one
+//	 * DONE
+//	 */
+//	public void decrementSlices()
+//	{
+//		slices--;
+//		if(slices < 1)
+//		{
+//			markFinished();
+//		}
+//	}
 	
-	/**
-	 * Method to set the number of slices
-	 * Used when more than one slice is taken
-	 * or the number is incorrect
-	 * DONE
-	 * @param newNum new number of slices
-	 */
-	public void setSlices(int newNum)
-	{
-		slices = newNum;
-		if(slices < 1)
-		{
-			markFinished();
-		}
-	}
+//	/**
+//	 * Method to set the number of slices
+//	 * Used when more than one slice is taken
+//	 * or the number is incorrect
+//	 * DONE
+//	 * @param newNum new number of slices
+//	 */
+//	public void setSlices(int newNum)
+//	{
+//		slices = newNum;
+//		if(slices < 1)
+//		{
+//			markFinished();
+//		}
+//	}
 	
 	/**
 	 * Method to mark the pizza as finished
@@ -119,7 +118,7 @@ public class Pizza
 	 */
 	public void markFinished()
 	{
-		slices = 0;
+		//slices = 0;
 		done = true;
 	}
 	

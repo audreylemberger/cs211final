@@ -3,6 +3,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -36,9 +37,9 @@ public class PizzaView extends JPanel
 	public PizzaView(PizzaController controller)
 	{
 		super(new BorderLayout());
-		add(createSidePanel(), BorderLayout.EAST);
+		this.add(createSidePanel(), BorderLayout.EAST);
 		this.controller = controller;
-		add(createPizzaPanel(), BorderLayout.CENTER);
+		this.add(createPizzaPanel(), BorderLayout.CENTER);
 		
 	}
 	
@@ -63,6 +64,8 @@ public class PizzaView extends JPanel
 //		pizzaPanel.add(new JLabel("extra cheese"));
 //		pizzaPanel.add(new JLabel("Antonio's"));
 //		pizzaPanel.add(new JLabel("vegetarian, kosher/halal, gluten free"));
+		
+		//TODO add a JButton to each pizza to view it
 		
 		pizzaPanel = new JPanel(new GridLayout(2, 4));
 		JPanel topPanel = new JPanel(new GridLayout(1,4));
@@ -181,6 +184,7 @@ public class PizzaView extends JPanel
 		
 		sidePanel.add(anotherPanel);
 		sidePanel.add(searchButton);
+		sidePanel.add(addButton);
 		
 		
 		return sidePanel;
@@ -226,8 +230,8 @@ public class PizzaView extends JPanel
 	
 	public void switchAddPanel()
 	{
-		remove(sidePanel);
-		remove(pizzaPanel);
+		this.remove(sidePanel);
+		this.remove(pizzaPanel);
 		addPanel = new JPanel(new BorderLayout());
 		
 		JLabel topLabel = new JLabel("Add a pizza");
@@ -243,23 +247,141 @@ public class PizzaView extends JPanel
 		nestedLoc.add(roomField);
 		pizzaLoc.add(nestedLoc);
 		
-		
+		JPanel dietaryPanel = new JPanel();
 		JLabel dietary = new JLabel("Dietary Restriction");
-		vegetarian = new JCheckBox("vegetarian");
-		vegan = new JCheckBox("vegan");
-		kosher = new JCheckBox("kosher");
-		glutenFree = new JCheckBox("glutenFree");
+		JCheckBox vegetarian = new JCheckBox("vegetarian");
+		JCheckBox vegan = new JCheckBox("vegan");
+		JCheckBox kosher = new JCheckBox("kosher");
+		JCheckBox glutenFree = new JCheckBox("glutenFree");
+		
+		JPanel toppingPanel = new JPanel(new GridLayout(2, 1));
+		JLabel toppingsLabel = new JLabel("Toppings");
+		toppingPanel.add(toppingsLabel);
 		
 		
-		add(addPanel, BorderLayout.CENTER);
+		JPanel topCheckPanel = new JPanel(new GridLayout(4, 3));
+		JCheckBox[] toppingsArray = {new JCheckBox("cheese"), new JCheckBox("extra cheese"), new JCheckBox("sauce"),
+								new JCheckBox("pepperoni"), new JCheckBox("mushrooms"), new JCheckBox("onions"),
+								new JCheckBox("sausage"), new JCheckBox("bacon"), new JCheckBox("black olives"),
+								new JCheckBox("green peppers"), new JCheckBox("pineapple"), new JCheckBox("spinach")};
+		//will this work who knows
+		for(int i = 0; i < toppingsArray.length; i++)
+		{
+			topCheckPanel.add(toppingsArray[i]);
+		}
+		
+		JPanel vendorPanel = new JPanel(new GridLayout(1,2));
+		vendorPanel.add(new JLabel("Where is your pizza from?"));
+		vendorPanel.add(vendor);
+		
+		JPanel notePanel = new JPanel(new GridLayout(1,2));
+		notePanel.add(new JLabel("Note: (optional)"));
+		JTextArea noteField = new JTextArea();
+		notePanel.add(noteField);
+		
+		JPanel iDontEvenKnow = new JPanel(new GridLayout(4,1));
+		JPanel whoEvenDoes = new JPanel(new GridLayout(2,1));
+		whoEvenDoes.add(dietaryPanel);
+		whoEvenDoes.add(vendorPanel);
+		
+		iDontEvenKnow.add(pizzaLoc);
+		iDontEvenKnow.add(toppingPanel);
+		iDontEvenKnow.add(whoEvenDoes);
+		iDontEvenKnow.add(notePanel);
+		
+		
+//		JCheckBox cheese = new JCheckBox("cheese");
+//		JCheckBox extraCheese = new JCheckBox("extra cheese");
+//		JCheckBox sauce = new JCheckBox("sauce");
+//		JCheckBox pepperoni = new JCheckBox("pepperoni");
+//		JCheckBox mushrooms = new JCheckBox("mushrooms");
+//		JCheckBox onions = new JCheckBox("onions");
+//		JCheckBox sausage = new JCheckBox("sausage");
+//		JCheckBox bacon = new JCheckBox("bacon");
+//		JCheckBox blackOlives = new JCheckBox("black olives");
+//		JCheckBox greenPeppers = new JCheckBox("green peppers");
+//		JCheckBox pineapple = new JCheckBox("pineapple");
+//		JCheckBox spinach = new JCheckBox("spinach");
+		
+		JButton createPizzaButton = new JButton("Create Pizza");
+		createPizzaButton.addActionListener(
+				new ActionListener()
+				{
+					/**
+					 * Invoked when associated action is performed.
+					 **/
+					public void actionPerformed( ActionEvent e )
+					{
+						//TODO create a pizza, switch back to regular view
+						
+						boolean[] restrictions = new boolean[4];
+						if(vegetarian.isSelected())
+						{
+							restrictions[0] = true;
+						}
+						else
+						{
+							restrictions[0] = false;
+						}
+						if(vegan.isSelected())
+						{
+							restrictions[1] = true;
+						}
+						else
+						{
+							restrictions[1] = false;
+						}
+						if(kosher.isSelected())
+						{
+							restrictions[2] = true;
+						}
+						else
+						{
+							restrictions[2] = false;
+						}
+						if(glutenFree.isSelected())
+						{
+							restrictions[3] = true;
+						}
+						else
+						{
+							restrictions[3] = false;
+						}
+						
+						
+						ArrayList<String> toppingList = new ArrayList<String>();
+						for(int i = 0; i < toppingsArray.length; i++)
+						{
+							if(toppingsArray[i].isSelected())
+							{
+								toppingList.add(toppingsArray[i].getText());
+							}
+						}
+						String[] topParameter = (String[]) toppingList.toArray();
+						
+						String[] loc = {(String) building.getSelectedItem(), roomField.getText()};
+						
+						String vend = (String) vendor.getSelectedItem();
+						String note = noteField.getText();
+						
+						controller.addPizza(new Pizza(restrictions, topParameter, loc, vend, note));
+						
+						switchPizzaPanel();
+					}
+				}
+			);
+		
+		addPanel.add(iDontEvenKnow, BorderLayout.CENTER);
+		addPanel.add(createPizzaButton, BorderLayout.SOUTH);
+		this.add(addPanel, BorderLayout.CENTER);
 	}
 	
 	public void switchPizzaPanel()
 	{
-		remove(addPanel);
+		this.remove(addPanel);
 		
-		add(createSidePanel(), BorderLayout.EAST);
-		add(createPizzaPanel(), BorderLayout.CENTER);
+		this.add(createSidePanel(), BorderLayout.EAST);
+		this.add(createPizzaPanel(), BorderLayout.CENTER);
 	}
 	
 	

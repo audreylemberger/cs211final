@@ -74,10 +74,11 @@ public class PizzaController
 	/**
 	 * Not sure what our parameters would be/how to get that info from frontend
 	 */
-	public void addPizza()
+	public void addPizza(Pizza newPizza)
 	{
 		//TODO integrate with frontend, get all the inputs
 		//create a new pizza using inputs and add to set
+		pizzas.add(newPizza);
 		numPizzas++;
 	}
 	
