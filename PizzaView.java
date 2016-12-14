@@ -1,11 +1,22 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -32,8 +43,9 @@ public class PizzaView extends JPanel
 	private JPanel pizzaPanel;
 	private JPanel pizzaList;
 	private JPanel addPanel;
-	private JPanel killMe;
+	private JPanel anotherPizzaPanel;
 	private PizzaController controller;
+	private BufferedImage image;
 	
 	public PizzaView(PizzaController controller)
 	{
@@ -70,6 +82,8 @@ public class PizzaView extends JPanel
 		//TODO add a JButton to each pizza to view it
 		
 		pizzaPanel = new JPanel(new BorderLayout());
+		pizzaPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
 		JPanel topPanel = new JPanel(new GridLayout(1,5));
 		JLabel locLabel = new JLabel("Location", SwingConstants.CENTER);
 		//locLabel.setLineWrap(true);
@@ -85,6 +99,7 @@ public class PizzaView extends JPanel
 		topPanel.add(drLabel);
 		JLabel spacing = new JLabel("");
 		topPanel.add(spacing);
+		topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		pizzaPanel.add(topPanel, BorderLayout.NORTH);
 		
 		updatePizzas();
@@ -106,6 +121,7 @@ public class PizzaView extends JPanel
 		}
 		
 		pizzaList = new JPanel(new GridLayout(controller.getNumViewPizzas(), 5));
+		pizzaList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		System.out.println(controller.getNumViewPizzas());
 		System.out.println(controller.getViewSet().size());
 		//for every pizza in the set that matches the current search
@@ -118,6 +134,7 @@ public class PizzaView extends JPanel
 				//create a jtextarea and add it
 				JLabel dispText = new JLabel(display[i], SwingConstants.CENTER);
 				//dispText.setLineWrap(true);
+				dispText.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				pizzaList.add(dispText);
 			}
 			JButton pizzaButton = new JButton("View");
@@ -142,18 +159,34 @@ public class PizzaView extends JPanel
 		pizzaList.repaint();
 		
 	}
-
+	
 
 	private JPanel createSidePanel() 
 	{
-		sidePanel = new JPanel();
-		sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+		
+		sidePanel = new JPanel(new GridLayout(2, 1));
+		sidePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		sidePanel.setPreferredSize(new Dimension(250, 800));
+		JPanel imgPanel = new JPanel();
+		JPanel otherPanel = new JPanel(new GridLayout(5, 1));
+		
+		
+		
+		URL url = this.getClass().getResource("spinningPizza.gif");
+		Icon myImgIcon = new ImageIcon(url);
+		JLabel imageLbl = new JLabel(myImgIcon);
+		imgPanel.add(imageLbl);
+		sidePanel.add(imgPanel);
+		
+		
+		
+		
 		JLabel search = new JLabel("Search by...");
 		
 		JLabel dietary = new JLabel("Dietary Restriction");
 		vegetarian = new JCheckBox("vegetarian");
 		vegan = new JCheckBox("vegan");
-		kosher = new JCheckBox("kosher");
+		kosher = new JCheckBox("kosher/halal");
 		glutenFree = new JCheckBox("gluten free");
 		
 		String[] buildings = {"", "Art Building", "Carr", "Ciruti", "Clapp", 
@@ -175,13 +208,19 @@ public class PizzaView extends JPanel
 							"pineapple", "spinach"};
 		topping = new JComboBox<String>(toppings);
 		
-		
-		sidePanel.add(search);
-		sidePanel.add(dietary);
-		sidePanel.add(vegetarian);
-		sidePanel.add(vegan);
-		sidePanel.add(kosher);
-		sidePanel.add(glutenFree);
+		JPanel dietaryPanel = new JPanel(new GridLayout(5, 1));
+		dietaryPanel.add(dietary);
+		dietaryPanel.add(vegetarian);
+		dietaryPanel.add(vegan);
+		dietaryPanel.add(kosher);
+		dietaryPanel.add(glutenFree);
+		otherPanel.add(search);
+//		otherPanel.add(dietary);
+//		otherPanel.add(vegetarian);
+//		otherPanel.add(vegan);
+//		otherPanel.add(kosher);
+//		otherPanel.add(glutenFree);
+		otherPanel.add(dietaryPanel);
 		
 		JPanel anotherPanel = new JPanel(new GridLayout(3,2));
 		
@@ -226,9 +265,12 @@ public class PizzaView extends JPanel
 				}
 			);
 		
-		sidePanel.add(anotherPanel);
-		sidePanel.add(searchButton);
-		sidePanel.add(addButton);
+		otherPanel.add(anotherPanel);
+		otherPanel.add(searchButton);
+		otherPanel.add(addButton);
+		otherPanel.revalidate();
+		otherPanel.repaint();
+		sidePanel.add(otherPanel);
 		sidePanel.revalidate();
 		sidePanel.repaint();
 		
@@ -294,14 +336,15 @@ public class PizzaView extends JPanel
 		pizzaLoc.add(whereLabel);
 		pizzaLoc.add(nestedLoc);
 		
-		JPanel dietaryPanel = new JPanel();
+		JPanel dietaryPanel = new JPanel(new GridLayout(5,1));
 		JLabel dietary = new JLabel("Dietary Restriction");
 		JCheckBox vegetarian = new JCheckBox("vegetarian");
 		JCheckBox vegan = new JCheckBox("vegan");
-		JCheckBox kosher = new JCheckBox("kosher");
-		JCheckBox glutenFree = new JCheckBox("glutenFree");
+		JCheckBox kosher = new JCheckBox("kosher/halal");
+		JCheckBox glutenFree = new JCheckBox("gluten free");
 		dietaryPanel.add(dietary);
 		dietaryPanel.add(vegetarian);
+		dietaryPanel.add(vegan);
 		dietaryPanel.add(kosher);
 		dietaryPanel.add(glutenFree);
 		
@@ -318,7 +361,7 @@ public class PizzaView extends JPanel
 		notePanel.add(noteField);
 		
 		JPanel iDontEvenKnow = new JPanel(new GridLayout(4,1));
-		JPanel whoEvenDoes = new JPanel(new GridLayout(2,1));
+		JPanel whoEvenDoes = new JPanel(new GridLayout(1,2));
 		whoEvenDoes.add(dietaryPanel);
 		whoEvenDoes.add(vendorPanel);
 		
@@ -454,9 +497,9 @@ public class PizzaView extends JPanel
 		{
 			this.remove(addPanel);
 		}
-		if(killMe != null)
+		if(anotherPizzaPanel != null)
 		{
-			this.remove(killMe);
+			this.remove(anotherPizzaPanel);
 		}
 		this.add(createSidePanel(), BorderLayout.EAST);
 		this.add(createPizzaPanel(), BorderLayout.CENTER);
@@ -469,20 +512,20 @@ public class PizzaView extends JPanel
 		this.remove(sidePanel);
 		this.remove(pizzaPanel);
 		
-		killMe = new JPanel();
-		killMe.setLayout(new BoxLayout(killMe, BoxLayout.Y_AXIS));
+		anotherPizzaPanel = new JPanel();
+		anotherPizzaPanel.setLayout(new BoxLayout(anotherPizzaPanel, BoxLayout.Y_AXIS));
 		JLabel heading = new JLabel("Pizza in " + viewing.getLocString());
-		JLabel age = new JLabel("Delivered " + viewing.getAge() + " hours ago");
+		JLabel age = new JLabel("Delivered " + viewing.getAge(LocalDateTime.now()) + " hours ago");
 		JLabel toppings = new JLabel("Toppings: " + viewing.printToppings());
 		JLabel restrictions = new JLabel("Dietary restrictions: " + viewing.printRestrictions());
 		JLabel vendor = new JLabel("Ordered from " + viewing.getVendor());
 		JLabel note = new JLabel("Note: " + viewing.getNote());
-		killMe.add(heading);
-		killMe.add(age);
-		killMe.add(toppings);
-		killMe.add(restrictions);
-		killMe.add(vendor);
-		killMe.add(note);
+		anotherPizzaPanel.add(heading);
+		anotherPizzaPanel.add(age);
+		anotherPizzaPanel.add(toppings);
+		anotherPizzaPanel.add(restrictions);
+		anotherPizzaPanel.add(vendor);
+		anotherPizzaPanel.add(note);
 		
 		JButton finishedButton = new JButton("This pizza is finished");
 		finishedButton.addActionListener(
@@ -514,9 +557,9 @@ public class PizzaView extends JPanel
 				}
 			);
 		
-		killMe.add(backButton);
-		killMe.add(finishedButton);
-		this.add(killMe);
+		anotherPizzaPanel.add(backButton);
+		anotherPizzaPanel.add(finishedButton);
+		this.add(anotherPizzaPanel);
 		this.revalidate();
 		this.repaint();
 		
@@ -531,7 +574,7 @@ public class PizzaView extends JPanel
 		boolean[] restrictions2 = {false, false, true, false};
 		String[] toppings2 = {"cheese", "sauce", "pepperoni"};
 		String[] loc2 = {"Kendade", "307"};
-		String[] loc3 = {"Cleveland", "201"};
+		String[] loc3 = {"Cleveland", "L1"};
 		controller.addPizza(new Pizza(restrictions, toppings, loc, "Dominos", "For hungry CS Students"));
 		controller.addPizza(new Pizza(restrictions2, toppings2, loc2, "Antonio's", ""));
 		controller.addPizza(new Pizza(restrictions, toppings, loc3, "Family Pizza", "with cookies"));

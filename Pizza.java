@@ -309,10 +309,10 @@ public class Pizza implements Comparable
 	 * Method to calculate the age of the pizza
 	 * @return age in hours
 	 */
-	public double getAge()
+	public double getAge(LocalDateTime compare)
 	{
 		//determine the number of minutes between when the pizza was delivered and now
-		long age = ChronoUnit.MINUTES.between(delivered, LocalDateTime.now());
+		double age = ChronoUnit.MINUTES.between(delivered, compare);
 		//convert to hours
 		age = age/60;
 		return age;
@@ -341,7 +341,7 @@ public class Pizza implements Comparable
 	{
 		if(delivered.compareTo(((Pizza) o).getDelivered()) != 0)
 		{
-			return delivered.compareTo(((Pizza) o).getDelivered());
+			return -1*delivered.compareTo(((Pizza) o).getDelivered());
 		}
 		else if(location[0].compareTo(((Pizza) o).getLoc()[0]) != 0)
 		{
