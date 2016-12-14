@@ -27,125 +27,129 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-
+/**
+ * Class to hold all the swing components and handle interactions between the user and the pizzaController
+ * I know this isn't actually an implementation of the MVC design. It kind of just got out of control.
+ * This is probably the view and the controller and pizzaController is the model??
+ * @author kataiello
+ * @version 12/13/16
+ */
 public class PizzaView extends JPanel
 {
+	/* Checkboxes to keep track of dietary restrictions */
 	private JCheckBox vegetarian;
 	private JCheckBox vegan;
 	private JCheckBox kosher;
 	private JCheckBox glutenFree;
+	/* Combo boxes to hold location, vendor, and topping info */
 	private JComboBox<String> building;
 	private JComboBox<String> vendor;
 	private JComboBox<String> topping;
+	/* Buttons on the default panel */
 	private JButton searchButton;
 	private JButton addButton;
+	/* JPanels for different configurations of the window */
 	private JPanel sidePanel;
 	private JPanel pizzaPanel;
 	private JPanel pizzaList;
 	private JPanel addPanel;
 	private JPanel anotherPizzaPanel;
+	/* Controller to hold the pizzas */
 	private PizzaController controller;
+	/* Spinning pizza */
 	private BufferedImage image;
 	
+	/**
+	 * Constructor for the view. Sets up swing elements and adding pizzas to begin with (for demo)
+	 * @param controller
+	 */
 	public PizzaView(PizzaController controller)
 	{
 		super(new BorderLayout());
 		this.add(createSidePanel(), BorderLayout.EAST);
 		this.controller = controller;
 		this.add(createPizzaPanel(), BorderLayout.CENTER);
+		//Only used for demo to show app filled with pizzas. Can be commented out for actual use.
 		addABunchOfPizzas();
 		
 	}
 	
-	
+	/**
+	 * Creates the panel that holds a grid of all the available pizzas on campus
+	 * @return pizzaPanel
+	 */
 	private JPanel createPizzaPanel() 
 	{
-//		//hardcoding the fuck out of this
-//		pizzaPanel = new JPanel(new GridLayout(4,4));
-//		pizzaPanel.add(new JLabel("Location"));
-//		pizzaPanel.add(new JLabel("Toppings"));
-//		pizzaPanel.add(new JLabel("Vendor"));
-//		pizzaPanel.add(new JLabel("Dietary Restrictions"));
-//		pizzaPanel.add(new JLabel("1837 Common Room"));
-//		pizzaPanel.add(new JLabel("green peppers, olives"));
-//		pizzaPanel.add(new JLabel("Domino's"));
-//		pizzaPanel.add(new JLabel("vegetarian, kosher/halal"));
-//		pizzaPanel.add(new JLabel("Clapp 222A"));
-//		pizzaPanel.add(new JLabel("onions, sausage"));
-//		pizzaPanel.add(new JLabel("Family Pizza"));
-//		pizzaPanel.add(new JLabel("none"));
-//		pizzaPanel.add(new JLabel("Kendade 305"));
-//		pizzaPanel.add(new JLabel("extra cheese"));
-//		pizzaPanel.add(new JLabel("Antonio's"));
-//		pizzaPanel.add(new JLabel("vegetarian, kosher/halal, gluten free"));
-		
-		//TODO add a JButton to each pizza to view it
-		
+
 		pizzaPanel = new JPanel(new BorderLayout());
 		pizzaPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
+		//topPanel holds the title row
 		JPanel topPanel = new JPanel(new GridLayout(1,5));
 		JLabel locLabel = new JLabel("Location", SwingConstants.CENTER);
-		//locLabel.setLineWrap(true);
 		topPanel.add(locLabel);
 		JLabel topLabel = new JLabel("Toppings", SwingConstants.CENTER);
-		//topLabel.setLineWrap(true);
 		topPanel.add(topLabel);
 		JLabel vendLabel = new JLabel("Vendor", SwingConstants.CENTER);
-		//vendLabel.setLineWrap(true);
 		topPanel.add(vendLabel);
 		JLabel drLabel = new JLabel("Dietary Restrictions", SwingConstants.CENTER);
-		//drLabel.setLineWrap(true);
 		topPanel.add(drLabel);
+		//messed up the GridLayout if I didn't do this
 		JLabel spacing = new JLabel("");
 		topPanel.add(spacing);
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		pizzaPanel.add(topPanel, BorderLayout.NORTH);
 		
+		//add all the pizzas
 		updatePizzas();
+		//empty search
 		search();
+		//not sure if these are necessary but not having them makes me nervous
 		pizzaPanel.revalidate();
 		pizzaPanel.repaint();
-		
 		return pizzaPanel;
 	}
 
-
+	/**
+	 * Method to create the actual grid with all the pizzas in it
+	 */
 	private void updatePizzas() 
 	{
+		//make sure all the pizzas are steamin hot and won't give people food poisoning
 		controller.refresh();
+		//remove the old pizzaList
 		if(pizzaList != null)
 		{
 			pizzaPanel.remove(pizzaList);
 			pizzaList.removeAll();
 		}
-		
+		//create a new one with the same number of rows as the number of pizzas
 		pizzaList = new JPanel(new GridLayout(controller.getNumViewPizzas(), 5));
 		pizzaList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		System.out.println(controller.getNumViewPizzas());
-		System.out.println(controller.getViewSet().size());
-		//for every pizza in the set that matches the current search
+		//System.out.println(controller.getNumViewPizzas());
+		//System.out.println(controller.getViewSet().size());
+		
+		//for every pizza in the set that matches the current search (done elsewhere)
 		for(Pizza pizzaElement:controller.getViewSet())
 		{
+			//get the array of what should be displayed in each column of the row
 			String[] display = pizzaElement.getDisplayArray();
 			//for each index in the display array
 			for(int i = 0; i < display.length; i++)
 			{
-				//create a jtextarea and add it
+				//create a JLabel and add it
 				JLabel dispText = new JLabel(display[i], SwingConstants.CENTER);
-				//dispText.setLineWrap(true);
 				dispText.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				pizzaList.add(dispText);
 			}
+			//add a view button for each to get a closer look
 			JButton pizzaButton = new JButton("View");
 			pizzaButton.addActionListener(
 					new ActionListener()
 					{
-						/**
-						 * Invoked when associated action is performed.
-						 **/
 						public void actionPerformed( ActionEvent e )
 						{
+							//link each button to this specific pizza
 							switchViewPizza(pizzaElement);
 						}
 					}
@@ -153,17 +157,21 @@ public class PizzaView extends JPanel
 			pizzaList.add(pizzaButton);
 			
 		}
-		
+		//add it to the whole pizza panel
 		pizzaPanel.add(pizzaList, BorderLayout.CENTER);
 		pizzaList.revalidate();
 		pizzaList.repaint();
 		
 	}
 	
-
+	/**
+	 * Creates the panel on the side for searching/filtering and spinning pizzas
+	 * @return sidepanel 
+	 */
 	private JPanel createSidePanel() 
 	{
-		
+		//there are so many nesting JPanels i'm so sorry
+		//only way to make the picture large enough
 		sidePanel = new JPanel(new GridLayout(2, 1));
 		sidePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		sidePanel.setPreferredSize(new Dimension(250, 800));
@@ -171,7 +179,7 @@ public class PizzaView extends JPanel
 		JPanel otherPanel = new JPanel(new GridLayout(5, 1));
 		
 		
-		
+		//figured out how to do this from StackOverflow (god bless)
 		URL url = this.getClass().getResource("spinningPizza.gif");
 		Icon myImgIcon = new ImageIcon(url);
 		JLabel imageLbl = new JLabel(myImgIcon);
@@ -180,11 +188,12 @@ public class PizzaView extends JPanel
 		
 		
 		
-		
+		//add all the fun filters
 		JLabel search = new JLabel("Search by...");
 		
 		JLabel dietary = new JLabel("Dietary Restriction");
 		vegetarian = new JCheckBox("vegetarian");
+		//does vegan pizza exist though? would i want to eat it?
 		vegan = new JCheckBox("vegan");
 		kosher = new JCheckBox("kosher/halal");
 		glutenFree = new JCheckBox("gluten free");
@@ -198,16 +207,20 @@ public class PizzaView extends JPanel
 								"Pearsons Annex", "Pearsons", "Porter", "Prospect",
 								"North Rockies", "South Rockies", "Safford", 
 								"Torrey", "Wilder"};
+		
 		building = new JComboBox<String>(buildings);
 		
+		//shoutout to South Hadley for having literally nowhere else to get pizza
 		String[] vendors = {"", "Dominos", "Pizza Hut", "Family Pizza", "Antonio's"};
 		vendor = new JComboBox<String>(vendors);
 		
+		//i googled "most popular pizza toppings" and just listed them here
 		String[] toppings = {"", "cheese", "extra cheese", "sauce", "pepperoni", "mushrooms",
 							"onions", "sausage", "bacon", "black olives", "green peppers", 
 							"pineapple", "spinach"};
 		topping = new JComboBox<String>(toppings);
 		
+		//Joke: Where did the Java nutritionist live in the GUI?
 		JPanel dietaryPanel = new JPanel(new GridLayout(5, 1));
 		dietaryPanel.add(dietary);
 		dietaryPanel.add(vegetarian);
@@ -215,15 +228,10 @@ public class PizzaView extends JPanel
 		dietaryPanel.add(kosher);
 		dietaryPanel.add(glutenFree);
 		otherPanel.add(search);
-//		otherPanel.add(dietary);
-//		otherPanel.add(vegetarian);
-//		otherPanel.add(vegan);
-//		otherPanel.add(kosher);
-//		otherPanel.add(glutenFree);
 		otherPanel.add(dietaryPanel);
 		
+		//betcha thought there weren't going to be anymore panels. surprise! it's more bad GUI planning
 		JPanel anotherPanel = new JPanel(new GridLayout(3,2));
-		
 		JLabel buildingLabel = new JLabel("Building");
 		buildingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		anotherPanel.add(buildingLabel);
@@ -241,9 +249,6 @@ public class PizzaView extends JPanel
 		searchButton.addActionListener(
 				new ActionListener()
 				{
-					/**
-					 * Invoked when associated action is performed.
-					 **/
 					public void actionPerformed( ActionEvent e )
 					{
 						search();
@@ -274,11 +279,14 @@ public class PizzaView extends JPanel
 		sidePanel.revalidate();
 		sidePanel.repaint();
 		
-		
 		return sidePanel;
 		
 	}
 	
+	/**
+	 * Master method to call all the sub-methods for searching in the controller
+	 * Checks to see which swing elements have been checked/selected and searches accordingly
+	 */
 	public void search()
 	{
 		//reset the controller to search on a new set
@@ -302,6 +310,8 @@ public class PizzaView extends JPanel
 			controller.searchRestrict(3);
 		}
 		
+		//all allow for searching with empty strings
+		
 		//search by building
 		controller.searchLoc((String) building.getSelectedItem()); 
 		
@@ -315,7 +325,9 @@ public class PizzaView extends JPanel
 		updatePizzas();
 	}
 	
-	
+	/**
+	 * Method to switch views to the add pizza panel. Removes everything from previous panel and adds all new components
+	 */
 	public void switchAddPanel()
 	{
 		this.remove(sidePanel);
@@ -324,9 +336,10 @@ public class PizzaView extends JPanel
 		
 		JLabel topLabel = new JLabel("Add a pizza");
 		addPanel.add(topLabel, BorderLayout.NORTH);
-		
+		//oops i did it again
 		JPanel pizzaLoc = new JPanel(new GridLayout(2, 1));
 		JLabel whereLabel = new JLabel("Where's your pizza?");
+		//im probably a bird because i like nested jpanels so much
 		JPanel nestedLoc = new JPanel(new GridLayout(1, 4));
 		nestedLoc.add(new JLabel("Building"));
 		nestedLoc.add(building);
@@ -335,7 +348,7 @@ public class PizzaView extends JPanel
 		nestedLoc.add(roomField);
 		pizzaLoc.add(whereLabel);
 		pizzaLoc.add(nestedLoc);
-		
+		//*DJ Khaled voice* "anotha one"
 		JPanel dietaryPanel = new JPanel(new GridLayout(5,1));
 		JLabel dietary = new JLabel("Dietary Restriction");
 		JCheckBox vegetarian = new JCheckBox("vegetarian");
@@ -348,18 +361,16 @@ public class PizzaView extends JPanel
 		dietaryPanel.add(kosher);
 		dietaryPanel.add(glutenFree);
 		
-		
-		
-		
+		//whoomp there it is another jpanel
 		JPanel vendorPanel = new JPanel(new GridLayout(1,2));
 		vendorPanel.add(new JLabel("Where is your pizza from?"));
 		vendorPanel.add(vendor);
-		
+		//#cantstopwontstop
 		JPanel notePanel = new JPanel(new GridLayout(1,2));
 		notePanel.add(new JLabel("Note: (optional)"));
 		JTextArea noteField = new JTextArea();
 		notePanel.add(noteField);
-		
+		//is it too late now to say sorry
 		JPanel iDontEvenKnow = new JPanel(new GridLayout(4,1));
 		JPanel whoEvenDoes = new JPanel(new GridLayout(1,2));
 		whoEvenDoes.add(dietaryPanel);
@@ -379,11 +390,6 @@ public class PizzaView extends JPanel
 		JCheckBox pineapple = new JCheckBox("pineapple");
 		JCheckBox spinach = new JCheckBox("spinach");
 		
-//		JCheckBox[] toppingsArray = {new JCheckBox("cheese"), new JCheckBox("extra cheese"), new JCheckBox("sauce"),
-//				new JCheckBox("pepperoni"), new JCheckBox("mushrooms"), new JCheckBox("onions"),
-//				new JCheckBox("sausage"), new JCheckBox("bacon"), new JCheckBox("black olives"),
-//				new JCheckBox("green peppers"), new JCheckBox("pineapple"), new JCheckBox("spinach")};
-		//will this work who knows
 		
 		JPanel toppingPanel = new JPanel(new GridLayout(2, 1));
 		JLabel toppingsLabel = new JLabel("Toppings");
@@ -412,12 +418,11 @@ public class PizzaView extends JPanel
 				new ActionListener()
 				{
 					/**
-					 * Invoked when associated action is performed.
-					 **/
+					 * ~where all the pizza making magic happens~
+					 */
 					public void actionPerformed( ActionEvent e )
 					{
-						//TODO create a pizza, switch back to regular view
-						
+						//pass in the correct restrictions based on what's checked
 						boolean[] restrictions = new boolean[4];
 						if(vegetarian.isSelected())
 						{
@@ -452,7 +457,7 @@ public class PizzaView extends JPanel
 							restrictions[3] = false;
 						}
 						
-						
+						//get the full list of toppings
 						ArrayList<String> toppingList = new ArrayList<String>();
 						for(int i = 0; i < toppingsArray.length; i++)
 						{
@@ -474,9 +479,11 @@ public class PizzaView extends JPanel
 						
 						String vend = (String) vendor.getSelectedItem();
 						String note = noteField.getText();
-						
+						//add the pizza to the controller
 						controller.addPizza(new Pizza(restrictions, stringTopParameter, loc, vend, note));
+						//update the pizzas accordingly
 						updatePizzas();
+						//switch back to the pizza panel
 						switchPizzaPanel();
 					}
 				}
@@ -490,7 +497,9 @@ public class PizzaView extends JPanel
 		this.revalidate();
 		this.repaint();
 	}
-	
+	/**
+	 * Method to switch views to the default view. Removes the other JPanels and creates new ones
+	 */
 	public void switchPizzaPanel()
 	{
 		if(addPanel != null)
@@ -507,6 +516,10 @@ public class PizzaView extends JPanel
 		this.repaint();
 	}
 	
+	/**
+	 * Method to switch the view to display more information about a pizza
+	 * @param viewing the lucky pizza
+	 */
 	public void switchViewPizza(Pizza viewing)
 	{
 		this.remove(sidePanel);
@@ -526,7 +539,7 @@ public class PizzaView extends JPanel
 		anotherPizzaPanel.add(restrictions);
 		anotherPizzaPanel.add(vendor);
 		anotherPizzaPanel.add(note);
-		
+		//allows users to indicate when a pizza is no longer available
 		JButton finishedButton = new JButton("This pizza is finished");
 		finishedButton.addActionListener(
 				new ActionListener()
@@ -542,7 +555,7 @@ public class PizzaView extends JPanel
 					}
 				}
 			);
-		
+		//go back to the pizza list
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(
 				new ActionListener()
@@ -565,6 +578,9 @@ public class PizzaView extends JPanel
 		
 	}
 	
+	/**
+	 * Method to use in demos to start the app with 3 pizzas already in it
+	 */
 	public void addABunchOfPizzas()
 	{
 		boolean[] restrictions = {true, false, true, false};

@@ -10,7 +10,7 @@ import java.util.TreeSet;
 /**
  * Class to handle each individual pizza
  * @author kataiello
- * @version 12/1/16
+ * @version 12/13/16
  */
 public class Pizza implements Comparable
 {
@@ -21,9 +21,7 @@ public class Pizza implements Comparable
 	//something to keep track of date and time/age?
 	private LocalDateTime delivered;
 	private LocalDateTime expires;
-	//number of remaining slices
-	//private int slices;
-	//true if no slices remain
+	//true if no slices remain or expired
 	private boolean done;
 	//first index is building, second is room
 	private String[] location;
@@ -35,14 +33,11 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Constructor method
-	 * TODO this comment
-	 * TODO handle date and time
-	 * @param restr
-	 * @param tops
-	 * @param slices
-	 * @param loc
-	 * @param vend
-	 * @param note
+	 * @param restr dietary restrictions
+	 * @param tops toppings
+	 * @param loc 2 index array to hold location string
+	 * @param vend vendor
+	 * @param note note for pizza
 	 */
 	public Pizza(boolean[] restr, String[] tops, String[] loc, String vend, String note)
 	{
@@ -63,58 +58,9 @@ public class Pizza implements Comparable
 		
 	}
 	
-//	/**
-//	 * Method to compare ages of different pizzas
-//	 * @param other pizza to be sorted
-//	 * @return 1 if this is greater, -1 if other is greater, 0 if equal
-//	 */
-//	public int compareTo(Pizza other)
-//	{
-//		return delivered.compareTo(other.getDelivered());
-//	}
-	
-//	/**
-//	 * Getter method for slices
-//	 * DONE
-//	 * @return number of slices
-//	 */
-//	public int getSlices()
-//	{
-//		return slices;
-//	}
-	
-//	/**
-//	 * Decrements slices by one
-//	 * DONE
-//	 */
-//	public void decrementSlices()
-//	{
-//		slices--;
-//		if(slices < 1)
-//		{
-//			markFinished();
-//		}
-//	}
-	
-//	/**
-//	 * Method to set the number of slices
-//	 * Used when more than one slice is taken
-//	 * or the number is incorrect
-//	 * DONE
-//	 * @param newNum new number of slices
-//	 */
-//	public void setSlices(int newNum)
-//	{
-//		slices = newNum;
-//		if(slices < 1)
-//		{
-//			markFinished();
-//		}
-//	}
 	
 	/**
 	 * Method to mark the pizza as finished
-	 * DONE
 	 */
 	public void markFinished()
 	{
@@ -124,7 +70,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to check if the pizza is finished
-	 * DONE
 	 * @return true if pizza is finished
 	 */
 	public boolean isFinished()
@@ -134,7 +79,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to return the array representation of location
-	 * DONE
 	 * @return location
 	 */
 	public String[] getLoc()
@@ -144,7 +88,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to return the string representation of location
-	 * DONE
 	 * @return locationString
 	 */
 	public String getLocString()
@@ -154,7 +97,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to return name of vendor
-	 * DONE
 	 * @return vendor
 	 */
 	public String getVendor()
@@ -164,7 +106,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to return the optional note with pizza
-	 * DONE
 	 * @return note
 	 */
 	public String getNote()
@@ -181,7 +122,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to see if this pizza meets a certain dietary restriction
-	 * DONE
 	 * @param index of restriction
 	 * @return true if it does
 	 */
@@ -192,7 +132,6 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to find a topping on the pizza
-	 * DONE
 	 * @param topping to be searched for
 	 * @return true if contains topping
 	 */
@@ -203,19 +142,10 @@ public class Pizza implements Comparable
 	
 	/**
 	 * Method to return a string representation of toppings
-	 * TODO settle on a data structure
-	 * @return
+	 * @return string representation of toppings
 	 */
 	public String printToppings()
 	{
-		/*
-		 * TODO: choose a data structure to use this with
-		 * if we continue using a hashset to store toppings,
-		 * we could use an iterator, but this will not produce
-		 * toppings in the same order every time. Also, do we want
-		 * to have an alphabetized list of toppings? We could use a
-		 * treeSet instead but that has a longer runtime
-		 */
 		//create a sorted treeset from the hashset of toppings
 		Set<String> tset = new TreeSet<String>(toppings);
 		//create an iterator from the sorted set
@@ -236,6 +166,10 @@ public class Pizza implements Comparable
 		return build.substring(0, build.length() - 2);
 	}
 	
+	/**
+	 * Method to return a string representation of dietary restrictions
+	 * @return string
+	 */
 	public String printRestrictions()
 	{
 		StringBuilder restSB = new StringBuilder();
@@ -337,16 +271,23 @@ public class Pizza implements Comparable
 	}
 
 	@Override
+	/**
+	 * CompareTo method to sort pizzas in treeset
+	 */
 	public int compareTo(Object o) 
 	{
+		//first try comparing by time added
 		if(delivered.compareTo(((Pizza) o).getDelivered()) != 0)
 		{
+			//-1 because we want newest at the top
 			return -1*delivered.compareTo(((Pizza) o).getDelivered());
 		}
+		//if added at the same exact time, sort by building
 		else if(location[0].compareTo(((Pizza) o).getLoc()[0]) != 0)
 		{
 			return location[0].compareTo(((Pizza) o).getLoc()[0]);
 		}
+		//otherwise sort by room and hope nobody orchestrates adding two pizzas in the same room in the same building at the same exact time???
 		else
 		{
 			return location[1].compareTo(((Pizza) o).getLoc()[1]);

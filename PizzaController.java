@@ -4,26 +4,23 @@ import java.util.TreeSet;
 
 
 /**
- * TODO: In this Java GUI version I put all GUI elements in view, when I feel like
- * JPanel stuff and buttons should be in controller and the list of pizzas should
- * be in the view. We can change this when we integrate with backend.
+ * Class to keep track of all the delicious pizzas on campus
  * @author kataiello
- * @version 12/1/2016
+ * @version 12/13/2016
  */
 public class PizzaController 
 {
-	//I'm thinking a treeset? That way we could sort by default by whatever measure we decide on
-	//in our compareTo() method in Pizza
+	//global set of pizzas
 	private TreeSet<Pizza> pizzas;
-	//TODO probably don't need to keep track of the number of pizzas
 	private int numPizzas;
-	//private PizzaView view;
+	//set of pizzas to display (can be narrowed down by searching)
 	private TreeSet<Pizza> viewSet;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public PizzaController()
 	{
-		//this.view = view;
 		pizzas = new TreeSet<Pizza>();
 		//set to hold the pizzas that will be shown, initialize to all
 		viewSet = pizzas;
@@ -37,6 +34,8 @@ public class PizzaController
 	public void refresh()
 	{
 		//lord save me & my macbook
+		//peter im so sorry i didn't think about iterating a treeset and 
+		//editing at the same time so i'm like literally juggling pizzas
 		TreeSet<Pizza> iShouldntBeAllowedAComputer = new TreeSet<Pizza>();
 		
 		//delete all old pizzas
@@ -54,7 +53,8 @@ public class PizzaController
 			}
 			
 		}
-		
+		//~when you try your best but you don't succeed~
+		//~when you get what you want but not what you need~
 		for(Pizza pizzaElement:iShouldntBeAllowedAComputer)
 		{
 			//remove from set when too old or finished
@@ -67,7 +67,6 @@ public class PizzaController
 	
 	/**
 	 * Method to return the total number of available pizzas
-	 * DONE
 	 * @return numPizzas
 	 */
 	public int getNumPizzas()
@@ -77,7 +76,6 @@ public class PizzaController
 	
 	/**
 	 * Method to return the number of pizzas to display
-	 * DONE
 	 * @return numViewPizzas
 	 */
 	public int getNumViewPizzas()
@@ -86,55 +84,51 @@ public class PizzaController
 	}
 	
 	/**
-	 * Not sure what our parameters would be/how to get that info from frontend
+	 * Method to add a pizza to the set
+	 * @param pizza to be added
 	 */
 	public void addPizza(Pizza newPizza)
 	{
-		//TODO integrate with frontend, get all the inputs
-		//create a new pizza using inputs and add to set
+		//gladly accept this delicious pizza
 		pizzas.add(newPizza);
 		numPizzas++;
 	}
 	
-	/**
-	 * TODO: Write a method to parse through the pizzas set and integrate
-	 * with frontend, sorted by time?
-	 */
-	
-	/**
-	 * TODO: integrate with frontend to find what field to search by and
-	 * return a treeset of pizzas that match
-	 * @return
-	 */
-	public TreeSet<Pizza> search()
-	{
-		/*
-		 * reset viewSet to contain all possible pizzas and delete ones that don't match
-		 * deleting instead of adding because it will ensure only pizzas that meet **all**
-		 * not some of the restrictions will remain
-		 */
-		viewSet = new TreeSet<Pizza>(pizzas);
-		/* 
-		 * TODO figure out what fields have been changed, call search on those 
-		 * (for each changed field) --> make sure to call more than once on
-		 * fields that allow multiple selections (dietary restrictions)
-		*/
-		
-
-		//viewSet after all the searches have been called so it only contains pizzas that match
-		return viewSet;
-	}
+	//nah
+//	/**
+//	 * integrate with frontend to find what field to search by and
+//	 * return a treeset of pizzas that match
+//	 * @return
+//	 */
+//	public TreeSet<Pizza> search()
+//	{
+//		/*
+//		 * reset viewSet to contain all possible pizzas and delete ones that don't match
+//		 * deleting instead of adding because it will ensure only pizzas that meet **all**
+//		 * not some of the restrictions will remain
+//		 */
+//		viewSet = new TreeSet<Pizza>(pizzas);
+//		/* 
+//		 * figure out what fields have been changed, call search on those 
+//		 * (for each changed field) --> make sure to call more than once on
+//		 * fields that allow multiple selections (dietary restrictions)
+//		*/
+//		
+//
+//		//viewSet after all the searches have been called so it only contains pizzas that match
+//		return viewSet;
+//	}
 	
 	/**
 	 * Method to modify viewSet to contain only pizzas that have the
 	 * specified topping
-	 * DONE
 	 * @param topping to be searched for
 	 */
 	public void searchTopping(String topping)
 	{
 		if(topping.length() > 1)
 		{
+			//everybody makes mistakes
 			TreeSet<Pizza> iWantToBeDone = new TreeSet<Pizza>();
 			//for each pizza in viewSet
 			for(Pizza pizzaElement:viewSet)
@@ -174,10 +168,7 @@ public class PizzaController
 				//if it isn't in the specified building
 				if(!(pizzaElement.getLoc()[0]).equals(building))
 				{
-					//delete it from viewSet
-					//viewSet.remove(pizzaElement);
-					
-					//we have to work around this because we procrastinated too much to solve this logically
+					//add it to the set to delete it later
 					iWantToBeDone.add(pizzaElement);
 				}
 			}
@@ -192,7 +183,6 @@ public class PizzaController
 	/**
 	 * Method to search for pizzas that meet a specific dietary restriction
 	 * 0 = vegetarian, 1 = vegan, 2 = kosher/halal, 3 = gluten free
-	 * DONE
 	 * @param index of dietary restriction
 	 */
 	public void searchRestrict(int index)
@@ -204,10 +194,7 @@ public class PizzaController
 			//if it doesn't have the specified restriction
 			if(!(pizzaElement.meetsRestriction(index)))
 			{
-				//delete it from viewSet
-				//viewSet.remove(pizzaElement);
-				
-				//we have to work around this because we procrastinated too much to solve this logically
+				//add it to the set to delete it later
 				iWantToBeDone.add(pizzaElement);
 			}
 		}
@@ -219,7 +206,6 @@ public class PizzaController
 	
 	/**
 	 * Method to search for pizzas that are from a specific vendor
-	 * DONE
 	 * @param vendor to be searched for
 	 */
 	public void searchVendor(String vendor)
@@ -233,10 +219,7 @@ public class PizzaController
 				//if it isn't the specified vendor
 				if(!(pizzaElement.getVendor().equals(vendor)))
 				{
-					//delete it from viewSet
-					//viewSet.remove(pizzaElement);
-					
-					//we have to work around this because we procrastinated too much to solve this logically
+					//add it to the set to delete it later
 					iWantToBeDone.add(pizzaElement);
 				}
 			}
@@ -248,11 +231,18 @@ public class PizzaController
 		
 	}
 	
+	/**
+	 * Method to reset the viewSet to contain all of the pizzas available
+	 */
 	public void resetSearch()
 	{
 		viewSet = new TreeSet<Pizza>(pizzas);
 	}
 	
+	/**
+	 * Getter method for viewset to be used in frontend
+	 * @return viewset
+	 */
 	public TreeSet<Pizza> getViewSet()
 	{
 		return viewSet;
